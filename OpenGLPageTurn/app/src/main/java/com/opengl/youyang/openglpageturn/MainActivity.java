@@ -1,9 +1,14 @@
 package com.opengl.youyang.openglpageturn;
 
 import android.app.Activity;
+import android.graphics.BitmapFactory;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.opengl.youyang.openglpageturn.modle.Cube;
+import com.opengl.youyang.openglpageturn.render.OpenGLRenderer;
 
 
 public class MainActivity extends Activity {
@@ -11,7 +16,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        GLSurfaceView view=new GLSurfaceView(this);
+        OpenGLRenderer renderer=new OpenGLRenderer();
+        view.setRenderer(renderer);
+        setContentView(view);
+
+        Cube cube=new Cube(1, 1, 1);
+        cube.loadBitmap(BitmapFactory.decodeResource(getResources(),
+                R.drawable.jay));
+        renderer.addMesh(cube);
     }
 
     @Override
