@@ -2,10 +2,10 @@ package com.opengl.youyang.openglpageturn.modle;
 
 /**
  * 类描述：
- * 
+ *
+ * @author 尤洋
  * @Package com.yy.muyu.view
  * @ClassName: Plane
- * @author 尤洋
  * @mail youyang@ucweb.com
  * @date 2015-3-14 下午8:13:05
  */
@@ -13,12 +13,12 @@ public class Plane extends Mesh {
 
     /**
      * 构造方法描述：
-     * 
+     *
      * @Title: Plane
      * @date 2015-3-14 下午8:13:05
      */
     public Plane() {
-        this(1, 1, 1, 1);
+        this(1, 1.5f, 1, 1);
     }
 
     public Plane(float width, float height) {
@@ -26,13 +26,13 @@ public class Plane extends Mesh {
     }
 
     /**
-     * 
      * 构造方法描述：
+     *
+     * @param width                   宽度
+     * @param height                  高度
+     * @param widthSegments           宽度可以分成的份数
+     * @param heightSegments          高度可以分成的份数
      * @Title: Plane
-     * @param width   宽度
-     * @param height  高度
-     * @param widthSegments 宽度可以分成的份数
-     * @param heightSegments高度可以分成的份数
      * @date 2015-3-15 下午8:57:04
      */
     public Plane(float width, float height, int widthSegments, int heightSegments) {
@@ -55,25 +55,25 @@ public class Plane extends Mesh {
                 vertices[currentVertex + 2] = 0; //z坐标
                 currentVertex += 3;
                 int n = y * (widthSegments + 1) + x; //第几个顶点
-                
-                if(y<heightSegments&&x<widthSegments){
+
+                if (y < heightSegments && x < widthSegments) {
                     //俩个三角形构成一个正方形
                     /**
                      *      1234    顶点排序
                      *      5678        
                      */
                     //第一个三角形  125
-                    indices[currentIndex]=(short)n;
-                    indices[currentIndex+1]=(short)(n+1);
-                    indices[currentIndex+2]=(short)(n+w);
+                    indices[currentIndex] = (short) n;
+                    indices[currentIndex + 1] = (short) (n + 1);
+                    indices[currentIndex + 2] = (short) (n + w);
                     //第二个三角形  265
-                    indices[currentIndex+3]=(short)(n+1);
-                    indices[currentIndex+4]=(short)(n+1+w);
-                    indices[currentIndex+5]=(short)(n+1+w-1);
-                    
-                    currentIndex+=6;    
+                    indices[currentIndex + 3] = (short) (n + 1);
+                    indices[currentIndex + 4] = (short) (n + 1 + w);
+                    indices[currentIndex + 5] = (short) (n + 1 + w - 1);
+
+                    currentIndex += 6;
                 }
-                
+
             }
 
         }

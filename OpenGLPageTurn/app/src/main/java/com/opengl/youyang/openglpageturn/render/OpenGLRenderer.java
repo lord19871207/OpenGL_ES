@@ -9,26 +9,24 @@ import android.opengl.GLU;
 import com.opengl.youyang.openglpageturn.modle.Cube;
 import com.opengl.youyang.openglpageturn.modle.Group;
 import com.opengl.youyang.openglpageturn.modle.Mesh;
+import com.opengl.youyang.openglpageturn.modle.Plane;
 
 public class OpenGLRenderer implements Renderer {
 	private Mesh root;
 	private int angle=20;
-	public OpenGLRenderer() {
+	private IOpenGLDemo openGLDemo;
+
+	public OpenGLRenderer(IOpenGLDemo openGLDemo) {
+		this.openGLDemo=openGLDemo;
 		// Initialize our cube.
 		Group group = new Group();
 		Cube cube = new Cube(1, 1, 1);
 		cube.rx = 45;
 		cube.ry = 45;
-		group.add(cube);
+		Plane plane=new Plane();
+		group.add(plane);
 		root = group;
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * android.opengl.GLSurfaceView.Renderer#onSurfaceCreated(javax.microedition
-	 * .khronos.opengles.GL10, javax.microedition.khronos.egl.EGLConfig)
-	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// Set the background color to black ( rgba ).
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
@@ -42,6 +40,7 @@ public class OpenGLRenderer implements Renderer {
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 		// Really nice perspective calculations.
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+
 	}
 
 	/*
@@ -53,17 +52,18 @@ public class OpenGLRenderer implements Renderer {
 	 */
 	public void onDrawFrame(GL10 gl) {
 		// Clears the screen and depth buffer.
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glColor4f(0.0f, 0.0f, 0.7f, 0.5f);
-		// Replace the current matrix with the identity matrix
-		gl.glLoadIdentity();
-		// Translates 4 units into the screen.
-		gl.glTranslatef(0, 0, -4); 
-		
-		gl.glRotatef(angle, 0, 0, 2);
-		// Draw our scene.
-		root.draw(gl); 
-		angle++;
+//		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+//		gl.glColor4f(0.0f, 0.0f, 0.7f, 0.5f);
+//		// Replace the current matrix with the identity matrix
+//		gl.glLoadIdentity();
+//		// Translates 4 units into the screen.
+//		gl.glTranslatef(0, 0, -2);
+//
+//		gl.glRotatef(0, 0, 0, 2);
+//		// Draw our scene.
+//		root.draw(gl);
+//		angle++;
+		openGLDemo.drawScene(gl);
 	}
 
 	/*
@@ -98,4 +98,12 @@ public class OpenGLRenderer implements Renderer {
     public void addMesh(Mesh mesh) {
         ((Group) root).add(mesh);
     }
+
+
+	public interface IOpenGLDemo{
+		public void drawScene(GL10 gl);
+		public void initScene(GL10 gl);
+	}
+
+
 }

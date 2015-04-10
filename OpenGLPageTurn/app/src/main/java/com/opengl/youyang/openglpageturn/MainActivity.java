@@ -6,9 +6,9 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.opengl.youyang.openglpageturn.modle.Cube;
 import com.opengl.youyang.openglpageturn.render.OpenGLRenderer;
+import com.opengl.youyang.openglpageturn.view.SmoothSlipView;
 
 
 public class MainActivity extends Activity {
@@ -16,15 +16,17 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GLSurfaceView view=new GLSurfaceView(this);
-        OpenGLRenderer renderer=new OpenGLRenderer();
-        view.setRenderer(renderer);
-        setContentView(view);
+//        GLSurfaceView view=new GLSurfaceView(this);
+//        OpenGLRenderer renderer=new OpenGLRenderer();
+//        view.setRenderer(renderer);
+//        setContentView(view);
 
-        Cube cube=new Cube(1, 1, 1);
-        cube.loadBitmap(BitmapFactory.decodeResource(getResources(),
-                R.drawable.jay));
-        renderer.addMesh(cube);
+//        Cube cube=new Cube(1, 1, 1);
+//        cube.loadBitmap(BitmapFactory.decodeResource(getResources(),
+//                R.drawable.jay));
+//        renderer.addMesh(cube);
+        SmoothSlipView view=new SmoothSlipView(this);
+        setContentView(view);
     }
 
     @Override
