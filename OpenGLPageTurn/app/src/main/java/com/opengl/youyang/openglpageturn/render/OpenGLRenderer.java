@@ -15,6 +15,7 @@ public class OpenGLRenderer implements Renderer {
 	private Mesh root;
 	private int angle=20;
 	private IOpenGLDemo openGLDemo;
+	private int mWidth, mHeight;
 
 	public OpenGLRenderer(IOpenGLDemo openGLDemo) {
 		this.openGLDemo=openGLDemo;
@@ -74,6 +75,8 @@ public class OpenGLRenderer implements Renderer {
 	 * .khronos.opengles.GL10, int, int)
 	 */
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
+		mWidth = width;
+		mHeight = height;
 		// Sets the current view port to the new size.
 		gl.glViewport(0, 0, width, height);
 		// Select the projection matrix
@@ -98,6 +101,14 @@ public class OpenGLRenderer implements Renderer {
     public void addMesh(Mesh mesh) {
         ((Group) root).add(mesh);
     }
+
+	public int getmWidth() {
+		return mWidth;
+	}
+
+	public int getmHeight() {
+		return mHeight;
+	}
 
 
 	public interface IOpenGLDemo{

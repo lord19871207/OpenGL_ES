@@ -1,13 +1,10 @@
 package com.opengl.youyang.openglpageturn;
 
 import android.app.Activity;
-import android.graphics.BitmapFactory;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.opengl.youyang.openglpageturn.modle.Cube;
-import com.opengl.youyang.openglpageturn.render.OpenGLRenderer;
+
 import com.opengl.youyang.openglpageturn.view.SmoothSlipView;
 
 

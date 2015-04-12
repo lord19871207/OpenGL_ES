@@ -1,6 +1,7 @@
 package com.opengl.youyang.openglpageturn.view;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -16,12 +17,12 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class SmoothSlipView extends GLSurfaceView implements OpenGLRenderer.IOpenGLDemo {
     Plane plane;
-    private float x;
-    private float y;
     private float prex;
     private float prey;
     float dx,dy;
     float a=0;
+    private int mWidth, mHeight;
+    private Matrix mMatrixMove = new Matrix();
 
 
     public SmoothSlipView(Context context, AttributeSet attrs) {
@@ -38,40 +39,48 @@ public class SmoothSlipView extends GLSurfaceView implements OpenGLRenderer.IOpe
         setRenderer(renderer);
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY); //
         plane = new Plane();
+        mWidth= renderer.getmWidth();
+        mHeight=renderer.getmHeight();
     }
 
+    float downX;
+    float downY;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        x = event.getX();
-        y = event.getY();
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+
+                downX = event.getX();
+                downY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-
-                dx = x - prex;
-                dy = y - prey;
-
-                if(dx>0){
-                    a++;
-                }else{
-                    a--;
+                if(Math.abs(downX-event.getX())>20||Math.abs(downY-event.getY())>20){
+                    float x= event.getX();
+                    float y=event.getY();
+                    dx = (downX-x)* 2 / mWidth;;
+                    dy = (downX-x)* 2 / mWidth;;
+                    mMatrixMove.setTranslate(dx, dy);
+                    if(dx>0){
+                        a++;
+                    }else{
+                        a--;
+                    }
+                    requestRender();
                 }
-                requestRender();
+
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 break;
         }
-        prex = x;
-        prey = y;
 
         return true;
     }
 
     @Override
     public void drawScene(GL10 gl) {
+        final float matrix[] = new float[9];
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glColor4f(0.0f, 0.0f, 0.7f, 0.5f);
         // Replace the current matrix with the identity matrix
