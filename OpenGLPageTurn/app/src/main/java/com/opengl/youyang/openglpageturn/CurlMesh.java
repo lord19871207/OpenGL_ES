@@ -16,25 +16,21 @@
 
 package com.opengl.youyang.openglpageturn;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 /**
- * Class implementing actual curl/page rendering.
- * 
- * @author harism
+ * 仿真翻页
  */
 public class CurlMesh {
 
-	// Let's avoid using 'new' as much as possible. Meaning we introduce arrays
-	// once here and reuse them on runtime. Doesn't really have very much effect
-	// but avoids some garbage collections from happening.
+	//避免使用new 避免频繁GC
 	private Array<Vertex> mArrIntersections;
 	private Array<Vertex> mArrOutputVertices;
 	private Array<Vertex> mArrRotatedVertices;
@@ -44,7 +40,7 @@ public class CurlMesh {
 	private Array<ShadowVertex> mArrShadowTempVertices;
 	private Array<Vertex> mArrTempVertices;
 
-	// Buffers for feeding rasterizer.
+	// 光栅化的缓存
 	private FloatBuffer mBufNormals;
 	private FloatBuffer mBufShadowPenumbra;
 	private FloatBuffer mBufShadowVertices;
@@ -56,31 +52,26 @@ public class CurlMesh {
 	private int mCountShadowSelf;
 	private int mCountVertices;
 
-	// Boolean for 'flipping' texture sideways.
+	// 页面是否折叠
 	private boolean mFlipTexture = false;
 	// Maximum number of split lines used for creating a curl.
 	private int mMaxCurlSplits;
 	
-	// Page instance.
+	// 页面对象
 	private final CurlPage mPage = new CurlPage();
 
-	// Bounding rectangle for this mesh. mRectagle[0] = top-left corner,
-	// mRectangle[1] = bottom-left, mRectangle[2] = top-right and mRectangle[3]
-	// bottom-right.
+	//四边形边界  0 左上  1左下  2右上  3右下
 	private final Vertex[] mRectangle = new Vertex[4];
-	// Texture ids and other variables.
+	// 纹理id 数组
 	private int[] mTextureIds = null;
 
 	/**
-	 * Constructor for mesh object.
-	 * 
+	 * mesh对象的构造函数
 	 * @param maxCurlSplits
-	 *            Maximum number curl can be divided into. The bigger the value
-	 *            the smoother curl will be. With the cost of having more
-	 *            polygons for drawing.
+	 *            卷曲的最大分割数目. 数值越大 翻页越平滑.需要画个多的多边形
 	 */
 	public CurlMesh(int maxCurlSplits) {
-		// There really is no use for 0 splits.
+		// 至少需要分割一次
 		mMaxCurlSplits = maxCurlSplits < 1 ? 1 : maxCurlSplits;
 
 		mArrScanLines = new Array<Double>(maxCurlSplits + 2);
@@ -102,13 +93,13 @@ public class CurlMesh {
 			mArrShadowTempVertices.add(new ShadowVertex());
 		}
 
-		// Rectangle consists of 4 vertices. Index 0 = top-left, index 1 =
-		// bottom-left, index 2 = top-right and index 3 = bottom-right.
+		//填充四边形的四个顶点 0左上  1 左下  2右上 3右下
 		for (int i = 0; i < 4; ++i) {
 			mRectangle[i] = new Vertex();
 		}
 		// Set up shadow penumbra direction to each vertex. We do fake 'self
 		// shadow' calculations based on this information.
+		//设置每个顶点阴影方向
 		mRectangle[0].mPenumbraX = mRectangle[1].mPenumbraX = mRectangle[1].mPenumbraY = mRectangle[3].mPenumbraY = -1;
 		mRectangle[0].mPenumbraY = mRectangle[2].mPenumbraX = mRectangle[2].mPenumbraY = mRectangle[3].mPenumbraX = 1;
 
@@ -141,7 +132,7 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Adds vertex to buffers.
+	 * 添加顶点数据到本地缓存中
 	 */
 	private void addVertex(Vertex vertex) {
 		mBufVertices.put((float) vertex.mPosX);
