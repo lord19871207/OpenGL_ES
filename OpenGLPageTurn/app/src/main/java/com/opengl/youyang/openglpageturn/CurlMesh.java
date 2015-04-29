@@ -54,7 +54,7 @@ public class CurlMesh {
 
 	// 页面是否折叠
 	private boolean mFlipTexture = false;
-	// Maximum number of split lines used for creating a curl.
+	// 用于扭曲效果的最大分割线数量
 	private int mMaxCurlSplits;
 	
 	// 页面对象
@@ -97,16 +97,14 @@ public class CurlMesh {
 		for (int i = 0; i < 4; ++i) {
 			mRectangle[i] = new Vertex();
 		}
-		// Set up shadow penumbra direction to each vertex. We do fake 'self
-		// shadow' calculations based on this information.
-		//设置每个顶点阴影方向
+		//设置每个顶点阴影方向 ，基于这些值来计算阴影
 		mRectangle[0].mPenumbraX = mRectangle[1].mPenumbraX = mRectangle[1].mPenumbraY = mRectangle[3].mPenumbraY = -1;
 		mRectangle[0].mPenumbraY = mRectangle[2].mPenumbraX = mRectangle[2].mPenumbraY = mRectangle[3].mPenumbraX = 1;
 
-		// There are 4 vertices from bounding rect, max 2 from adding split line
-		// to two corners and curl consists of max mMaxCurlSplits lines each
-		// outputting 2 vertices.
+		// 边界矩形包含四个顶点 , 分割两个角的线占用了两个顶点  弯曲效果包含 分割线数目乘以2数量的顶点
 		int maxVerticesCount = 4 + 2 + (2 * mMaxCurlSplits);
+
+		//申请本地内存
 		mBufVertices = ByteBuffer.allocateDirect(maxVerticesCount * 3 * 4)
 				.order(ByteOrder.nativeOrder()).asFloatBuffer();
 		mBufVertices.position(0);
@@ -149,20 +147,20 @@ public class CurlMesh {
 	 * Sets curl for this mesh.
 	 * 
 	 * @param curlPos
-	 *            Position for curl 'center'. Can be any point on line collinear
-	 *            to curl.
+	 *            卷曲处的中点，可以是卷曲重合的那条直线上的任意一点
 	 * @param curlDir
-	 *            Curl direction, should be normalized.
+	 *           卷曲的方向，需要做归一化处理
 	 * @param radius
-	 *            Radius of curl.
+	 *            卷曲半径
 	 */
 	public void curl(PointF curlPos, PointF curlDir, double radius) {
 
+		//将缓存中的位置置0，从第一个位置开始读取字节数据
 		mBufVertices.position(0);
 		mBufTexCoords.position(0);
 		mBufNormals.position(0);
 
-		// Calculate curl angle from direction.
+		// 计算对应方向上的卷曲角度
 		double curlAngle = Math.acos(curlDir.x);
 		curlAngle = curlDir.y > 0 ? -curlAngle : curlAngle;
 
