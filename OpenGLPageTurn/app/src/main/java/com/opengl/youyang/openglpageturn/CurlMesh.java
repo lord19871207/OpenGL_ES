@@ -33,6 +33,7 @@ public class CurlMesh {
 	//避免使用new 避免频繁GC
 	private Array<Vertex> mArrIntersections;
 	private Array<Vertex> mArrOutputVertices;
+	/**旋转之后的顶点*/
 	private Array<Vertex> mArrRotatedVertices;
 	private Array<Double> mArrScanLines;
 	private Array<ShadowVertex> mArrShadowDropVertices;
@@ -68,7 +69,7 @@ public class CurlMesh {
 	/**
 	 * mesh对象的构造函数
 	 * @param maxCurlSplits
-	 *            卷曲的最大分割数目. 数值越大 翻页越平滑.需要画个多的多边形
+	 *            卷曲的最大分割数目. 数值越大 翻页越平滑.需要画更多的多边形
 	 */
 	public CurlMesh(int maxCurlSplits) {
 		// 至少需要分割一次
@@ -160,9 +161,11 @@ public class CurlMesh {
 		mBufTexCoords.position(0);
 		mBufNormals.position(0);
 
-		// 计算对应方向上的卷曲角度
+		// 计算对应方向上的卷曲角度  由于是单位向量，所以余弦值*1就是角度
 		double curlAngle = Math.acos(curlDir.x);
+		//curlDir.y > 0 从下往上卷曲
 		curlAngle = curlDir.y > 0 ? -curlAngle : curlAngle;
+
 
 		// Initiate rotated rectangle which's is translated to curlPos and
 		// rotated so that curl direction heads to right (1,0). Vertices are
@@ -175,9 +178,11 @@ public class CurlMesh {
 			Vertex v = mArrTempVertices.remove(0);
 			v.set(mRectangle[i]);
 			v.translate(-curlPos.x, -curlPos.y);
+			//旋转角度之后的点
 			v.rotateZ(-curlAngle);
 			int j = 0;
 			for (; j < mArrRotatedVertices.size(); ++j) {
+				//旋转之前的顶点
 				Vertex v2 = mArrRotatedVertices.get(j);
 				if (v.mPosX > v2.mPosX) {
 					break;
@@ -224,7 +229,7 @@ public class CurlMesh {
 		mArrShadowDropVertices.clear();
 		mArrShadowSelfVertices.clear();
 
-		// Length of 'curl' curve.
+		// 弯曲的曲线的长度
 		double curlLength = Math.PI * radius;
 		// Calculate scan lines.
 		// TODO: Revisit this code one day. There is room for optimization here.
@@ -447,21 +452,20 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Calculates intersections for given scan line.
+	 * 计算给出的线段的交点
+	 * 按照顺序排列顶点得出不同的线段
 	 */
 	private Array<Vertex> getIntersections(Array<Vertex> vertices,
 			int[][] lineIndices, double scanX) {
 		mArrIntersections.clear();
-		// Iterate through rectangle lines each re-presented as a pair of
-		// vertices.
+		//四边形的每一条边都可以用一对顶点来表示
 		for (int j = 0; j < lineIndices.length; j++) {
 			Vertex v1 = vertices.get(lineIndices[j][0]);
 			Vertex v2 = vertices.get(lineIndices[j][1]);
 			// Here we expect that v1.mPosX >= v2.mPosX and wont do intersection
 			// test the opposite way.
 			if (v1.mPosX > scanX && v2.mPosX < scanX) {
-				// There is an intersection, calculate coefficient telling 'how
-				// far' scanX is from v2.
+				//有一个交点，计算系数 来判断scanX距离v2多远
 				double c = (scanX - v2.mPosX) / (v1.mPosX - v2.mPosX);
 				Vertex n = mArrTempVertices.remove(0);
 				n.set(v2);
