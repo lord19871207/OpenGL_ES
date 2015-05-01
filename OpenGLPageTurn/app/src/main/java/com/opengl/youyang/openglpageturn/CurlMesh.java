@@ -48,7 +48,7 @@ public class CurlMesh {
 	private FloatBuffer mBufTexCoords;
 	private FloatBuffer mBufVertices;
 
-	// Counter values.
+	// 保存顶点数量
 	private int mCountShadowDrop;
 	private int mCountShadowSelf;
 	private int mCountVertices;
@@ -75,7 +75,7 @@ public class CurlMesh {
 		// 至少需要分割一次
 		mMaxCurlSplits = maxCurlSplits < 1 ? 1 : maxCurlSplits;
 
-		mArrScanLines = new Array<Double>(maxCurlSplits + 2);
+		mArrScanLines = new Array<Double>(maxCurlSplits + 2);//（分割数+2）  条线
 		mArrOutputVertices = new Array<Vertex>(7);
 		mArrRotatedVertices = new Array<Vertex>(4);
 		mArrIntersections = new Array<Vertex>(2);
@@ -210,10 +210,13 @@ public class CurlMesh {
 			Vertex v0 = mArrRotatedVertices.get(0);
 			Vertex v2 = mArrRotatedVertices.get(2);
 			Vertex v3 = mArrRotatedVertices.get(3);
+
+			//求出v0到v2的距离
 			double dist2 = Math.sqrt((v0.mPosX - v2.mPosX)
 					* (v0.mPosX - v2.mPosX) + (v0.mPosY - v2.mPosY)
 					* (v0.mPosY - v2.mPosY));
-			double dist3 = Math.sqrt((v0.mPosX - v3.mPosX)
+			//求出v0到v3的距离
+ 			double dist3 = Math.sqrt((v0.mPosX - v3.mPosX)
 					* (v0.mPosX - v3.mPosX) + (v0.mPosY - v3.mPosY)
 					* (v0.mPosY - v3.mPosY));
 			if (dist2 > dist3) {
@@ -252,6 +255,7 @@ public class CurlMesh {
 		for (int i = 0; i < mArrScanLines.size(); ++i) {
 			// Once we have scanXmin and scanXmax we have a scan area to start
 			// working with.
+			//一旦计算出scanXmin和scanXmax 就可以确定出一个大概的区域
 			double scanXmin = mArrScanLines.get(i);
 			// First iterate 'original' rectangle vertices within scan area.
 			for (int j = 0; j < mArrRotatedVertices.size(); ++j) {
@@ -452,7 +456,7 @@ public class CurlMesh {
 	}
 
 	/**
-	 * 计算给出的线段的交点
+	 * 计算给出的线段与 x=scanX线段的交点
 	 * 按照顺序排列顶点得出不同的线段
 	 */
 	private Array<Vertex> getIntersections(Array<Vertex> vertices,
@@ -462,14 +466,14 @@ public class CurlMesh {
 		for (int j = 0; j < lineIndices.length; j++) {
 			Vertex v1 = vertices.get(lineIndices[j][0]);
 			Vertex v2 = vertices.get(lineIndices[j][1]);
-			// Here we expect that v1.mPosX >= v2.mPosX and wont do intersection
-			// test the opposite way.
 			if (v1.mPosX > scanX && v2.mPosX < scanX) {
-				//有一个交点，计算系数 来判断scanX距离v2多远
+				//有一个交点，计算系数 来判断直线上x=scanX的点距离v2多远
 				double c = (scanX - v2.mPosX) / (v1.mPosX - v2.mPosX);
 				Vertex n = mArrTempVertices.remove(0);
 				n.set(v2);
+				//交点的x坐标
 				n.mPosX = scanX;
+				//设置交点的y坐标
 				n.mPosY += (v1.mPosY - v2.mPosY) * c;
 				n.mTexX += (v1.mTexX - v2.mTexX) * c;
 				n.mTexY += (v1.mTexY - v2.mTexY) * c;
@@ -482,59 +486,60 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Getter for normal Buffer.
+	 * 获取 方向 对应的缓存
 	 */
 	public FloatBuffer getNormals() {
 		return mBufNormals;
 	}
 
 	/**
-	 * Getter for page for this mesh.
+	 * 获取这个mesh对应的page对象
 	 */
 	public CurlPage getPage() {
 		return mPage;
 	}
 
 	/**
-	 * Getter for self shadow vertices count.
+	 * 获取阴影顶点数量
 	 */
 	public int getSelfShadowCount() {
 		return mCountShadowSelf;
 	}
 
 	/**
-	 * Getter for shadow penumbra buffer.
+	 * penumbra中文为“半影”，是仅能接受到有限大光源部分光照的区域。有限大光源产生半影，使得阴影的边沿柔和化，也称作Soft Shadow
+	 * 这里是获取半影的本地缓存
 	 */
 	public FloatBuffer getShadowPenumbra() {
 		return mBufShadowPenumbra;
 	}
 
 	/**
-	 * Getter for shadow vertices buffer.
+	 * 获取阴影效果的顶点缓存
 	 */
 	public FloatBuffer getShadowVertices() {
 		return mBufShadowVertices;
 	}
 
 	/**
-	 * Getter for texture coordinate Buffer.
+	 * 获取纹理映射对应位置的缓存.
 	 */
 	public FloatBuffer getTexCoords() {
 		return mBufTexCoords;
 	}
 
 	/**
-	 * Getter for texture ids. Must be called from GL thread.
+	 * 获取纹理id，必须在GL线程中执行
 	 */
 	public int[] getTextures() {
 
-		// First allocate texture if there is not one yet.
+		//第一次如果没有纹理id的话就直接创建
 		if (mTextureIds == null) {
-			// Generate texture.
+			// 生成纹理
 			mTextureIds = new int[2];
 			GLES20.glGenTextures(2, mTextureIds, 0);
 			for (int textureId : mTextureIds) {
-				// Set texture attributes.
+				// 设置纹理属性
 				GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
 				GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
 						GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
@@ -561,22 +566,22 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Getter for vertex count.
+	 * 获取顶点数量
 	 */
 	public int getVertexCount() {
 		return mCountVertices;
 	}
 
 	/**
-	 * Getter for vertex Buffer.
+	 * 获取顶点的本地缓存
 	 */
 	public FloatBuffer getVertices() {
 		return mBufVertices;
 	}
 
 	/**
-	 * Resets mesh to 'initial' state. Meaning this mesh will draw a plain
-	 * textured rectangle after call to this method.
+	 * 将mesh重置到初始状态. 也就是说在调用这个方法后
+	 * 可以在mesh对应的四边形上画一个完整的 没有扭曲的纹理
 	 */
 	public void reset() {
 		mBufVertices.position(0);
@@ -595,7 +600,7 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Resets allocated texture id forcing creation of new one. After calling
+	 * 重置并创建新的纹理id. After calling
 	 * this method you most likely want to set bitmap too as it's lost. This
 	 * method should be called only once e.g GL context is re-created as this
 	 * method does not release previous texture id, only makes sure new one is
@@ -606,7 +611,7 @@ public class CurlMesh {
 	}
 
 	/**
-	 * If true, flips texture sideways.
+	 * 为true时 page两边都会映射纹理
 	 */
 	public void setFlipTexture(boolean flipTexture) {
 		mFlipTexture = flipTexture;
@@ -618,7 +623,6 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Update mesh bounds.
 	 * 更新平面四个点的x,y坐标
 	 */
 	public void setRect(RectF r) {
@@ -726,7 +730,7 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Holder for shadow vertex information.
+	 * 缓存阴影信息
 	 */
 	private class ShadowVertex {
 		public double mPenumbraX;
@@ -737,7 +741,7 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Holder for vertex information.
+	 * 封装顶点信息
 	 */
 	private class Vertex {
 	    //方向  方向的描述是通过向量点来描述的（0，0，0）到（x,y,z）
