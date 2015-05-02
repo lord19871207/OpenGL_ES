@@ -238,6 +238,7 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 		mViewRect.right = ratio;
 		updatePageRects();
 
+		//定义正交投影 mProjectionMatrix保存矩阵的16个元素  起始偏移值为0
 		Matrix.orthoM(mProjectionMatrix, 0, -ratio, ratio, -1f, 1f, -10f, 10f);
 		mShaderTexture.useProgram();
 		GLES20.glUniformMatrix4fv(mShaderTexture.getHandle("uProjectionM"), 1,
@@ -268,8 +269,7 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 	 * Removes CurlMesh from this renderer.
 	 */
 	public void removeCurlMesh(CurlMesh mesh) {
-		while (mCurlMeshes.remove(mesh))
-			;
+		while (mCurlMeshes.remove(mesh));
 	}
 
 	/**

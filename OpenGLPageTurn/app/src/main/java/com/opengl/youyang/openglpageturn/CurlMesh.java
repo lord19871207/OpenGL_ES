@@ -234,18 +234,18 @@ public class CurlMesh {
 
 		// 弯曲的曲线的长度
 		double curlLength = Math.PI * radius;
-		// Calculate scan lines.
+		// 计算分割线
 		// TODO: Revisit this code one day. There is room for optimization here.
 		mArrScanLines.clear();
 		if (mMaxCurlSplits > 0) {
+			//先添加最左边的线 x=0
 			mArrScanLines.add((double) 0);
 		}
 		for (int i = 1; i < mMaxCurlSplits; ++i) {
 			mArrScanLines.add((-curlLength * i) / (mMaxCurlSplits - 1));
 		}
-		// As mRotatedVertices is ordered regarding x -coordinate, adding
-		// this scan line produces scan area picking up vertices which are
-		// rotated completely. One could say 'until infinity'.
+		// 旋转的4个边界顶点 按x轴坐标点的顺序排列, 添加分割线切割出来的区域，跳出旋转过的顶点
+		//添加右上 顶点 对应的分割线
 		mArrScanLines.add(mArrRotatedVertices.get(3).mPosX - 1);
 
 		// Start from right most vertex. Pretty much the same as first scan area
