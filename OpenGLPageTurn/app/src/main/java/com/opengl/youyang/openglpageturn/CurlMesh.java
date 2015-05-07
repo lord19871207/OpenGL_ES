@@ -253,21 +253,20 @@ public class CurlMesh {
 		double scanXmax = mArrRotatedVertices.get(0).mPosX + 1;
 
 		for (int i = 0; i < mArrScanLines.size(); ++i) {
-			// Once we have scanXmin and scanXmax we have a scan area to start
-			// working with.
 			//一旦计算出scanXmin和scanXmax 就可以确定出一个大概的区域
 			double scanXmin = mArrScanLines.get(i);
 			// First iterate 'original' rectangle vertices within scan area.
 			for (int j = 0; j < mArrRotatedVertices.size(); ++j) {
 				Vertex v = mArrRotatedVertices.get(j);
-				// Test if vertex lies within this scan area.
+				// 测试这个顶点是否在区域内
 				// TODO: Frankly speaking, can't remember why equality check was
 				// added to both ends. Guessing it was somehow related to case
 				// where radius=0f, which, given current implementation, could
 				// be handled much more effectively anyway.
 				if (v.mPosX >= scanXmin && v.mPosX <= scanXmax) {
-					// Pop out a vertex from temp vertices.
+					// 从mArrTempVertices中取出一个顶点
 					Vertex n = mArrTempVertices.remove(0);
+					//并将符合条件的n设置到这个点
 					n.set(v);
 					// This is done solely for triangulation reasons. Given a
 					// rotated rectangle it has max 2 vertices having
@@ -383,7 +382,7 @@ public class CurlMesh {
 					int idx = (mArrShadowDropVertices.size() + 1) / 2;
 					mArrShadowDropVertices.add(idx, sv);
 				}
-				// Self shadow is cast partly over mesh.
+				// 自身的阴影部分投射在mesh上
 				if (v.mPosZ > radius) {
 					ShadowVertex sv = mArrShadowTempVertices.remove(0);
 					sv.mPosX = v.mPosX;
@@ -396,15 +395,15 @@ public class CurlMesh {
 				}
 			}
 
-			// Switch scanXmin as scanXmax for next iteration.
+			//将scanXmax的值转换为scanXmin 用于下一次迭代
 			scanXmax = scanXmin;
 		}
 
-		mBufVertices.position(0);
-		mBufTexCoords.position(0);
-		mBufNormals.position(0);
+		mBufVertices.position(0);//顶点
+		mBufTexCoords.position(0);//纹理
+		mBufNormals.position(0);//方向
 
-		// Add shadow Vertices.
+		// 添加阴影顶点
 		mBufShadowVertices.position(0);
 		mBufShadowPenumbra.position(0);
 		mCountShadowDrop = mCountShadowSelf = 0;
@@ -442,14 +441,14 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Getter for drop shadow vertices count.
+	 * 获取投影顶点的数量.
 	 */
 	public int getDropShadowCount() {
 		return mCountShadowDrop;
 	}
 
 	/**
-	 * Getter for whether page should be flipped.
+	 * 获取page是否翻动
 	 */
 	public boolean getFlipTexture() {
 		return mFlipTexture;
