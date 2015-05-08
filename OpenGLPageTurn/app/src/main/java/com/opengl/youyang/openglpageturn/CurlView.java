@@ -33,7 +33,7 @@ import android.view.View;
 public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		CurlRenderer.Observer {
 
-	// Curl state. We are flipping none, left or right page.
+	// 卷曲状态. We are flipping none, left or right page.
 	private static final int CURL_LEFT = 1;
 	private static final int CURL_NONE = 0;
 	private static final int CURL_RIGHT = 2;
@@ -43,9 +43,9 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 	private static final int SET_CURL_TO_LEFT = 1;
 	private static final int SET_CURL_TO_RIGHT = 2;
 
-	// Shows one page at the center of view.
+	// 只显示一张图片
 	public static final int SHOW_ONE_PAGE = 1;
-	// Shows two pages side by side.
+	// 左右各显示一张图片
 	public static final int SHOW_TWO_PAGES = 2;
 
 	private boolean mAllowLastPageCurl = true;
@@ -61,22 +61,22 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 
 	private PointF mCurlPos = new PointF();
 	private int mCurlState = CURL_NONE;
-	// Current bitmap index. This is always showed as front of right page.
+	// 当前bitmap的索引. 总是显示在右边页面的前面
 	private int mCurrentIndex = 0;
 
-	// Start position for dragging.
+	// 拖动的起始位置
 	private PointF mDragStartPos = new PointF();
 
 	private boolean mEnableTouchPressure = false;
-	// Bitmap size. These are updated from renderer once it's initialized.
+	//bitmap的尺寸. 当渲染器被初始化的时候会更新对应的值.
 	private int mPageBitmapHeight = -1;
-
 	private int mPageBitmapWidth = -1;
+
 	// Page meshes. Left and right meshes are 'static' while curl is used to
 	// show page flipping.
 	private CurlMesh mPageCurl;
-
 	private CurlMesh mPageLeft;
+
 	private PageProvider mPageProvider;
 	private CurlMesh mPageRight;
 
@@ -91,24 +91,18 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 	private int mViewMode = SHOW_ONE_PAGE;
 
 	/**
-	 * Default constructor.
+	 * 默认的构造函数
 	 */
 	public CurlView(Context ctx) {
 		super(ctx);
 		init(ctx);
 	}
 
-	/**
-	 * Default constructor.
-	 */
 	public CurlView(Context ctx, AttributeSet attrs) {
 		super(ctx, attrs);
 		init(ctx);
 	}
 
-	/**
-	 * Default constructor.
-	 */
 	public CurlView(Context ctx, AttributeSet attrs, int defStyle) {
 		this(ctx, attrs);
 	}
@@ -122,18 +116,19 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 	}
 
 	/**
-	 * Initialize method.
+	 * 初始化方法
 	 */
 	private void init(Context ctx) {
 		mRenderer = new CurlRenderer(this);
+		//设置OpenGL es版本
 		setEGLContextClientVersion(2);
 		setRenderer(mRenderer);
+		//当数据发生变化时才渲染
 		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 		setOnTouchListener(this);
 
-		// Even though left and right pages are static we have to allocate room
-		// for curl on them too as we are switching meshes. Another way would be
-		// to swap texture ids only.
+		// 尽管左右页面是静态的数据  在翻页时我们仍然需要 重新申请内存空间
+		// 另外一个方法就是更换纹理
 		mPageLeft = new CurlMesh(15);
 		mPageRight = new CurlMesh(15);
 		mPageCurl = new CurlMesh(15);
@@ -231,7 +226,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 
 	@Override
 	public boolean onTouch(View view, MotionEvent me) {
-		// No dragging during animation at the moment.
+		//在动画的过程中不能拖动
 		// TODO: Stop animation on touch event and return to drag mode.
 		if ((mAnimate && mAnimationTargetEvent != DO_NOTHING)
 				|| mPageProvider == null) {
@@ -373,7 +368,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 	}
 
 	/**
-	 * Allow the last page to curl.
+	 *允许上一页卷曲
 	 */
 	public void setAllowLastPageCurl(boolean allowLastPageCurl) {
 		mAllowLastPageCurl = allowLastPageCurl;

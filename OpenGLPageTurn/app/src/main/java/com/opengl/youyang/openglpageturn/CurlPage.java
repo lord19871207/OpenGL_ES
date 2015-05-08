@@ -18,13 +18,6 @@ package com.opengl.youyang.openglpageturn;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-
-/**
- * Storage class for page textures, blend colors and possibly some other values
- * in the future.
- * 
- * @author harism
- */
 public class CurlPage {
 
 	public static final int SIDE_BACK = 2;
@@ -63,7 +56,7 @@ public class CurlPage {
 	}
 
 	/**
-	 * Getter for color.
+	 * 获取颜色
 	 */
 	public int getColor(int side) {
 		switch (side) {
@@ -75,7 +68,7 @@ public class CurlPage {
 	}
 
 	/**
-	 * Recycles and frees underlying Bitmaps.
+	 * 释放掉看不见的bitmap所占的内存
 	 */
 	public void recycle() {
 		if (mBitmapFront != null) {
@@ -92,7 +85,7 @@ public class CurlPage {
 	}
 
 	/**
-	 * Resets this CurlPage into its initial state.
+	 * 重置bitmap及其颜色
 	 */
 	public void reset() {
 		mColorBack = Color.TRANSPARENT;
@@ -102,7 +95,7 @@ public class CurlPage {
 	}
 
 	/**
-	 * Setter for Bitmaps.
+	 * 设置正反面的bitmap.
 	 */
 	public void setBitmap(Bitmap texture, int side) {
 		if (texture == null) {
@@ -136,7 +129,7 @@ public class CurlPage {
 	}
 
 	/**
-	 * Setter blend color.
+	 * 设置混合颜色
 	 */
 	public void setColor(int color, int side) {
 		switch (side) {

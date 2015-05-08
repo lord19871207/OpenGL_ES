@@ -22,7 +22,7 @@ import android.opengl.GLES20;
 import android.util.Log;
 
 /**
- * Helper class for handling shaders.
+ * 着色器的帮助类
  */
 public final class CurlShader {
 

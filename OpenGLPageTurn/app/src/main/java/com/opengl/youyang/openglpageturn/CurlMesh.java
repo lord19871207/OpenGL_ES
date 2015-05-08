@@ -636,8 +636,7 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Sets texture coordinates to mRectangle vertices.
-	 * 设置纹理映射的顺序
+	 * 设置四边形纹理映射的顺序
 	 */
 	private void setTexCoords(float left, float top, float right, float bottom) {
 		//左上
@@ -658,7 +657,7 @@ public class CurlMesh {
 	}
 
 	/**
-	 * Simple fixed size array implementation.
+	 * 固定大小 的数组 实现
 	 */
 	private class Array<T> {
 		private Object[] mArray;

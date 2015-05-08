@@ -18,8 +18,10 @@ package com.opengl.youyang.openglpageturn;
 
 public final class CurlStatic {
 
-	// Shaders.
+	// 着色器
 
+
+	//阴影的片元着色器
 	public static final String SHADER_SHADOW_FRAGMENT = ""
 			+ "precision mediump float;                                       \n"
 			+ "varying vec2 vPenumbra;                                        \n"
@@ -29,6 +31,7 @@ public final class CurlStatic {
 			+ "  gl_FragColor = vec4(0.0, 0.0, 0.0, alpha);                   \n"
 			+ "}                                                              \n";
 
+	//阴影顶点着色器
 	public static final String SHADER_SHADOW_VERTEX = ""
 			+ "uniform mat4 uProjectionM;                                     \n"
 			+ "attribute vec3 aPosition;                                      \n"
@@ -40,7 +43,9 @@ public final class CurlStatic {
 			+ "  vPenumbra = normalize(aPenumbra);                            \n"
 			+ "}                                                              \n";
 
+	//纹理的片元着色器
 	public static final String SHADER_TEXTURE_FRAGMENT = ""
+			//中等画质
 			+ "precision mediump float;                                       \n"
 			+ "uniform sampler2D sTextureFront;                               \n"
 			+ "uniform sampler2D sTextureBack;                                \n"
@@ -63,6 +68,7 @@ public final class CurlStatic {
 			+ "  gl_FragColor.rgb *= 0.5 + abs(normal.z) * 0.5;               \n"
 			+ "}                                                              \n";
 
+	//纹理的顶点着色器
 	public static final String SHADER_TEXTURE_VERTEX = ""
 			+ "uniform mat4 uProjectionM;                                     \n"
 			+ "attribute vec3 aPosition;                                      \n"
