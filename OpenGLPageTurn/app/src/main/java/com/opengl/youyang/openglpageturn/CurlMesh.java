@@ -150,7 +150,7 @@ public class CurlMesh {
 	 * @param curlPos
 	 *            卷曲处的中点，可以是卷曲重合的那条直线上的任意一点
 	 * @param curlDir
-	 *           卷曲的方向，需要做归一化处理
+	 *           卷曲的方向，传入这个参数前  这个参数需要做归一化处理
 	 * @param radius
 	 *            卷曲半径
 	 */
@@ -167,12 +167,9 @@ public class CurlMesh {
 		curlAngle = curlDir.y > 0 ? -curlAngle : curlAngle;
 
 
-		// Initiate rotated rectangle which's is translated to curlPos and
-		// rotated so that curl direction heads to right (1,0). Vertices are
-		// ordered in ascending order based on x -coordinate at the same time.
-		// And using y -coordinate in very rare case in which two vertices have
-		// same x -coordinate.
-		mArrTempVertices.addAll(mArrRotatedVertices);
+		// 初始化旋转矩形 向卷曲点平移然后旋转，卷曲的方向指向 右边（1,0）的位置. 同时顶点按照x轴坐标升序排列
+		// 用y轴的话 两个顶点有很小的几率会有同样的x值。
+		mArrTempVertices.addAll(mArrRotatedVertices);//缓存顶点的容器 添加了矩形的四个顶点
 		mArrRotatedVertices.clear();
 		for (int i = 0; i < 4; ++i) {
 			Vertex v = mArrTempVertices.remove(0);
@@ -763,17 +760,22 @@ public class CurlMesh {
 			mPosX = mPosY = mPosZ = mTexX = mTexY = 0;
 		}
 
+
+		//绕Z轴旋转
 		public void rotateZ(double theta) {
-			double cos = Math.cos(theta);
-			double sin = Math.sin(theta);
+			double cos = Math.cos(theta);   //x
+			double sin = Math.sin(theta);    // y
+			//位置
 			double x = mPosX * cos + mPosY * sin;
 			double y = mPosX * -sin + mPosY * cos;
 			mPosX = x;
 			mPosY = y;
+			//方向
 			double nx = mNormalX * cos + mNormalY * sin;
 			double ny = mNormalX * -sin + mNormalY * cos;
 			mNormalX = nx;
 			mNormalY = ny;
+			//半阴影
 			double px = mPenumbraX * cos + mPenumbraY * sin;
 			double py = mPenumbraX * -sin + mPenumbraY * cos;
 			mPenumbraX = px;

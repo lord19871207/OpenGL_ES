@@ -101,6 +101,7 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 
 		mObserver.onDrawFrame();
 
+		//设置背景色
 		GLES20.glClearColor(Color.red(mBackgroundColor) / 255f,
 				Color.green(mBackgroundColor) / 255f,
 				Color.blue(mBackgroundColor) / 255f,
