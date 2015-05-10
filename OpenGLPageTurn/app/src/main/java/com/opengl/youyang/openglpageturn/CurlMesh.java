@@ -192,10 +192,10 @@ public class CurlMesh {
 		}
 
 		// 旋转的矩形的线条和定点的 index顺序. 我们需要找到旋转矩形的边界对应的线条. 在定点都按照x轴的顺序排序之后
-		// 偶们没必要担心在 0和1位置的定点
+		// 偶们没必要担心在 0和1位置的顶点所确定的那条直线
 		// 但是由于精度的问题，很有可能在3位置的顶点不是在0顶点 的对面
 		// 所以我们需要计算 0 点到 2和3点 的距离。然后根据需要 变更 line的顺序。
-		// Also vertices/lines are given in an order first one has x -coordinate
+		// 顶点所组成的线段 被按照x轴的顺序给出。Also vertices/lines are given in an order first one has x -coordinate
 		// at least the latter one. This property is used in getIntersections to
 		// see if there is an intersection.
 		int lines[][] = { { 0, 1 }, { 0, 2 }, { 1, 3 }, { 2, 3 } };
@@ -214,9 +214,11 @@ public class CurlMesh {
  			double dist3 = Math.sqrt((v0.mPosX - v3.mPosX)
 					* (v0.mPosX - v3.mPosX) + (v0.mPosY - v3.mPosY)
 					* (v0.mPosY - v3.mPosY));
-			if (dist2 > dist3) {
-				lines[1][1] = 3;
-				lines[2][1] = 2;
+
+			//根据距离来判断2 ，3点的位置
+ 			if (dist2 > dist3) {
+				lines[1][1] = 3;//  0 1 2 3
+				lines[2][1] = 2;//  0 1 3 2
 			}
 		}
 
@@ -240,7 +242,7 @@ public class CurlMesh {
 			mArrScanLines.add((-curlLength * i) / (mMaxCurlSplits - 1));
 		}
 		// 旋转的4个边界顶点 按x轴坐标点的顺序排列, 添加分割线切割出来的区域，跳出旋转过的顶点
-		//添加右上 顶点 对应的分割线
+		//添加最右边的顶点 对应的分割线x=mArrRotatedVertices.get(3).mPosX - 1
 		mArrScanLines.add(mArrRotatedVertices.get(3).mPosX - 1);
 
 		// Start from right most vertex. Pretty much the same as first scan area
