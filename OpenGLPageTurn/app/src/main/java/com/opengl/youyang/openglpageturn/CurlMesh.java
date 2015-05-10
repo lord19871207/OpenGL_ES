@@ -168,7 +168,7 @@ public class CurlMesh {
 
 
 		// 初始化旋转矩形 向卷曲点平移然后旋转，卷曲的方向指向 右边（1,0）的位置. 同时顶点按照x轴坐标升序排列
-		// 用y轴的话 两个顶点有很小的几率会有同样的x值。
+		// 两个顶点有很小的几率会有同样的x值此时就按照y轴的大小来排列。
 		mArrTempVertices.addAll(mArrRotatedVertices);//缓存顶点的容器 添加了矩形的四个顶点
 		mArrRotatedVertices.clear();
 		for (int i = 0; i < 4; ++i) {
@@ -191,12 +191,10 @@ public class CurlMesh {
 			mArrRotatedVertices.add(j, v);
 		}
 
-		// Rotated rectangle lines/vertex indices. We need to find bounding
-		// lines for rotated rectangle. After sorting vertices according to
-		// their x -coordinate we don't have to worry about vertices at indices
-		// 0 and 1. But due to inaccuracy it's possible vertex 3 is not the
-		// opposing corner from vertex 0. So we are calculating distance from
-		// vertex 0 to vertices 2 and 3 - and altering line indices if needed.
+		// 旋转的矩形的线条和定点的 index顺序. 我们需要找到旋转矩形的边界对应的线条. 在定点都按照x轴的顺序排序之后
+		// 偶们没必要担心在 0和1位置的定点
+		// 但是由于精度的问题，很有可能在3位置的顶点不是在0顶点 的对面
+		// 所以我们需要计算 0 点到 2和3点 的距离。然后根据需要 变更 line的顺序。
 		// Also vertices/lines are given in an order first one has x -coordinate
 		// at least the latter one. This property is used in getIntersections to
 		// see if there is an intersection.
