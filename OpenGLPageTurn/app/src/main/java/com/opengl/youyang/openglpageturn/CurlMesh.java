@@ -218,8 +218,8 @@ public class CurlMesh {
 			//根据距离来判断2 ，3点的位置
  			if (dist2 > dist3) {
 				lines[1][1] = 3;//  0 1 2 3
-				lines[2][1] = 2;//  0 1 3 2
-			}
+				lines[2][1] = 2;
+			}//  0 1 3 2
 		}
 
 		mCountVertices = 0;
@@ -245,14 +245,14 @@ public class CurlMesh {
 		//添加最右边的顶点 对应的分割线x=mArrRotatedVertices.get(3).mPosX - 1
 		mArrScanLines.add(mArrRotatedVertices.get(3).mPosX - 1);
 
-		// Start from right most vertex. Pretty much the same as first scan area
+		// 从最右边的顶点开始. Pretty much the same as first scan area
 		// is starting from 'infinity'.
 		double scanXmax = mArrRotatedVertices.get(0).mPosX + 1;
 
 		for (int i = 0; i < mArrScanLines.size(); ++i) {
 			//一旦计算出scanXmin和scanXmax 就可以确定出一个大概的区域
 			double scanXmin = mArrScanLines.get(i);
-			// First iterate 'original' rectangle vertices within scan area.
+			// 首先在可视区域内迭代 最初的矩形的顶点
 			for (int j = 0; j < mArrRotatedVertices.size(); ++j) {
 				Vertex v = mArrRotatedVertices.get(j);
 				// 测试这个顶点是否在区域内
@@ -293,7 +293,7 @@ public class CurlMesh {
 				}
 			}
 
-			// Search for scan line intersections.
+			// Search for scan line intersections.计算出交点
 			Array<Vertex> intersections = getIntersections(mArrRotatedVertices,
 					lines, scanXmin);
 
