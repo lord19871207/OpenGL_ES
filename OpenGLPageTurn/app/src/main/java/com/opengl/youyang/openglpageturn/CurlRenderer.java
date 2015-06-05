@@ -113,7 +113,7 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 			//
 			// Render drop shadow.
 			//
-
+			//开启混合模式
 			GLES20.glEnable(GLES20.GL_BLEND);
 			GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,
 					GLES20.GL_ONE_MINUS_SRC_ALPHA);
@@ -133,6 +133,7 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 			GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0,
 					mesh.getDropShadowCount());
 
+			//关闭混合模式
 			GLES20.glDisable(GLES20.GL_BLEND);
 
 			//
@@ -200,7 +201,7 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 					mesh.getVertexCount());
 
 			//
-			// Render self shadow.
+			//渲染自身阴影
 			//
 
 			GLES20.glEnable(GLES20.GL_BLEND);

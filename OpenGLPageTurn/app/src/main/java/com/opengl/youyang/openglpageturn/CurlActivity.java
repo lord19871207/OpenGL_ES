@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 
 /**
@@ -50,6 +51,10 @@ public class CurlActivity extends Activity {
 		mCurlView.setCurrentIndex(index);
 		mCurlView.setBackgroundColor(0xFFC0C0C0);
 
+
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB){
+			mCurlView.setPreserveEGLContextOnPause(true);
+		}
 		// This is something somewhat experimental. Before uncommenting next
 		// line, please see method comments in CurlView.
 		// mCurlView.setEnableTouchPressure(true);

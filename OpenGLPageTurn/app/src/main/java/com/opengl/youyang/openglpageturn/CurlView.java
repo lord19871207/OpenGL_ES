@@ -436,7 +436,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			}
 		}
 
-		// Finally normalize direction vector and do rendering.
+		//最后归一化方向向量并进行渲染
 		double dist = Math.sqrt(curlDir.x * curlDir.x + curlDir.y * curlDir.y);
 		if (dist != 0) {
 			curlDir.x /= dist;
@@ -648,7 +648,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 	 */
 	private void updateCurlPos(PointerPosition pointerPos) {
 
-		// Default curl radius.
+		// 设置默认的卷曲半径
 		double radius = 0.3 * mRenderer.getPageRect(CURL_RIGHT).width();
 		// TODO: This is not an optimal solution. Based on feedback received so
 		// far; pressure is not very accurate, it may be better not to map
@@ -668,22 +668,23 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		if (mCurlState == CURL_RIGHT
 				|| (mCurlState == CURL_LEFT && mViewMode == SHOW_TWO_PAGES)) {
 
+			//获取方向向量的x和y
 			mCurlDir.x = mCurlPos.x - mDragStartPos.x;
 			mCurlDir.y = mCurlPos.y - mDragStartPos.y;
+			//向量长度
 			float dist = (float) Math.sqrt(mCurlDir.x * mCurlDir.x + mCurlDir.y
 					* mCurlDir.y);
 
-			// Adjust curl radius so that if page is dragged far enough on
-			// opposite side, radius gets closer to zero.
+			// 调整弯曲半径 如果page被拖动到对面页足够远的地方, 半径趋向于零.
 			float pageWidth = mRenderer.getPageRect(CurlRenderer.PAGE_RIGHT)
-					.width();
-			double curlLen = radius * Math.PI;
+					.width();//获取页面宽度
+			double curlLen = radius * Math.PI;//半周长
 			if (dist > (pageWidth * 2) - curlLen) {
 				curlLen = Math.max((pageWidth * 2) - dist, 0f);
 				radius = curlLen / Math.PI;
 			}
 
-			// Actual curl position calculation.
+			// 实际弯曲位置的计算
 			if (dist >= curlLen) {
 				double translate = (dist - curlLen) / 2;
 				mCurlPos.x -= mCurlDir.x * translate / dist;

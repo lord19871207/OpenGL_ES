@@ -31,7 +31,7 @@ import java.nio.FloatBuffer;
 public class CurlMesh {
 
 	//避免使用new 避免频繁GC
-	private Array<Vertex> mArrIntersections;
+	private Array<Vertex> mArrIntersections;//交点的数组
 	private Array<Vertex> mArrOutputVertices;
 	/**旋转之后的顶点*/
 	private Array<Vertex> mArrRotatedVertices;
@@ -75,11 +75,13 @@ public class CurlMesh {
 		// 至少需要分割一次
 		mMaxCurlSplits = maxCurlSplits < 1 ? 1 : maxCurlSplits;
 
-		mArrScanLines = new Array<Double>(maxCurlSplits + 2);//（分割数+2）  条线
+		mArrScanLines = new Array<Double>(maxCurlSplits + 2);//（分割数+2）  条线  包括边界
 		mArrOutputVertices = new Array<Vertex>(7);
 		mArrRotatedVertices = new Array<Vertex>(4);
 		mArrIntersections = new Array<Vertex>(2);
 		mArrTempVertices = new Array<Vertex>(7 + 4);
+
+		//实例化缓存的顶点
 		for (int i = 0; i < 7 + 4; ++i) {
 			mArrTempVertices.add(new Vertex());
 		}
@@ -160,8 +162,7 @@ public class CurlMesh {
 		mBufVertices.position(0);
 		mBufTexCoords.position(0);
 		mBufNormals.position(0);
-
-		// 计算对应方向上的卷曲角度  由于是单位向量，所以余弦值*1就是角度
+		// 计算 绕Z轴 卷曲的角度  由于是单位向量，所以余弦值*1就是角度
 		double curlAngle = Math.acos(curlDir.x);
 		//curlDir.y > 0 从下往上卷曲
 		curlAngle = curlDir.y > 0 ? -curlAngle : curlAngle;
@@ -350,7 +351,7 @@ public class CurlMesh {
 				else {
 					// Even though it's not obvious from the if-else clause,
 					// here v.mPosX is between [-curlLength, 0]. And we can do
-					// calculations around a half cylinder.
+					// 围绕一个半圆柱进行计算.
 					double rotY = Math.PI * (v.mPosX / curlLength);
 					v.mPosX = radius * Math.sin(rotY);
 					v.mPosZ = radius - (radius * Math.cos(rotY));
@@ -639,15 +640,15 @@ public class CurlMesh {
 		//左上
 	    mRectangle[0].mTexX = left;
 		mRectangle[0].mTexY = top;
-		
+
 		//左下
 		mRectangle[1].mTexX = left;
 		mRectangle[1].mTexY = bottom;
-		
+
 		//右上
 		mRectangle[2].mTexX = right;
 		mRectangle[2].mTexY = top;
-		
+
 		//右下
 		mRectangle[3].mTexX = right;
 		mRectangle[3].mTexY = bottom;
