@@ -46,11 +46,11 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 	// private static final boolean USE_PERSPECTIVE_PROJECTION = false;
 	// Background color constant.
 	private int mBackgroundColor = 0xFF000000;
-	// Curl meshes used for static and dynamic rendering.
+	// 用于静态或者动态渲染的卷曲网格
 	private Vector<CurlMesh> mCurlMeshes;
 	private RectF mMargins = new RectF();
 	private Observer mObserver;
-	// Page rectangles.
+	// 正文页矩形
 	private final RectF mPageRectLeft;
 	private final RectF mPageRectRight;
 	// Projection matrix.
@@ -84,8 +84,8 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 	}
 
 	/**
-	 * Returns rect reserved for left or right page. Value page should be
-	 * PAGE_LEFT or PAGE_RIGHT.
+	 * 返回保留的左页或右页的矩形. 参数的形式为
+	 * PAGE_LEFT 或者 PAGE_RIGHT.
 	 */
 	public RectF getPageRect(int page) {
 		if (page == PAGE_LEFT) {

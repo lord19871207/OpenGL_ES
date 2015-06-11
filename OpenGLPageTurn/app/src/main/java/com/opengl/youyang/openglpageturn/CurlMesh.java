@@ -32,6 +32,7 @@ public class CurlMesh {
 
 	//避免使用new 避免频繁GC
 	private Array<Vertex> mArrIntersections;//交点的数组
+	/**输出数据的顶点*/
 	private Array<Vertex> mArrOutputVertices;
 	/**旋转之后的顶点*/
 	private Array<Vertex> mArrRotatedVertices;
@@ -150,7 +151,7 @@ public class CurlMesh {
 	 * Sets curl for this mesh.
 	 * 
 	 * @param curlPos
-	 *            卷曲处的中点，可以是卷曲重合的那条直线上的任意一点
+	 *            手指拖动时按下的位置
 	 * @param curlDir
 	 *           卷曲的方向，传入这个参数前  这个参数需要做归一化处理
 	 * @param radius
@@ -162,21 +163,21 @@ public class CurlMesh {
 		mBufVertices.position(0);
 		mBufTexCoords.position(0);
 		mBufNormals.position(0);
-		// 计算 绕Z轴 卷曲的角度  由于是单位向量，所以余弦值*1就是角度
+		// 计算 绕Z轴 旋转的角度  由于是单位向量，所以curlDir.x / 1  就是余弦值
 		double curlAngle = Math.acos(curlDir.x);
 		//curlDir.y > 0 从下往上卷曲
 		curlAngle = curlDir.y > 0 ? -curlAngle : curlAngle;
 
 
-		// 初始化旋转矩形 向卷曲点平移然后旋转，卷曲的方向指向 右边（1,0）的位置. 同时顶点按照x轴坐标升序排列
+		// 初始化旋转矩形 向触摸点平移然后旋转，卷曲的方向指向 右边（1,0）的位置. 同时顶点按照x轴坐标升序排列
 		// 两个顶点有很小的几率会有同样的x值此时就按照y轴的大小来排列。
 		mArrTempVertices.addAll(mArrRotatedVertices);//缓存顶点的容器 添加了矩形的四个顶点
 		mArrRotatedVertices.clear();
 		for (int i = 0; i < 4; ++i) {
 			Vertex v = mArrTempVertices.remove(0);
-			v.set(mRectangle[i]);
-			v.translate(-curlPos.x, -curlPos.y);
-			//旋转角度之后的点
+			v.set(mRectangle[i]);//分别设置矩形的四个顶点
+			v.translate(-curlPos.x, -curlPos.y);//从矩形顶点平移到对应的触摸点
+			//绕Z轴旋转-curlAngle之后的点
 			v.rotateZ(-curlAngle);
 			int j = 0;
 			for (; j < mArrRotatedVertices.size(); ++j) {
@@ -273,7 +274,7 @@ public class CurlMesh {
 							mArrRotatedVertices, lines, n.mPosX);
 					// In a sense one could say we're adding vertices always in
 					// two, positioned at the ends of intersecting line. And for
-					// triangulation to work properly they are added based on y
+					// 三角化 to work properly they are added based on y
 					// -coordinate. And this if-else is doing it for us.
 					if (intersections.size() == 1
 							&& intersections.get(0).mPosY > v.mPosY) {
@@ -324,7 +325,7 @@ public class CurlMesh {
 				mArrTempVertices.addAll(intersections);
 			}
 
-			// Add vertices found during this iteration to vertex etc buffers.
+			// 通过迭代将找到的顶点添加到缓存中
 			while (mArrOutputVertices.size() > 0) {
 				Vertex v = mArrOutputVertices.remove(0);
 				mArrTempVertices.add(v);
@@ -338,7 +339,7 @@ public class CurlMesh {
 					v.mNormalY = 0;
 					v.mNormalZ = 1;
 				}
-				// 'Completely' rotated vertices.
+				// 彻底旋转的顶点
 				else if (i == mArrScanLines.size() - 1 || curlLength == 0) {
 					v.mPosX = -(curlLength + v.mPosX);
 					v.mPosZ = 2 * radius;
@@ -598,10 +599,9 @@ public class CurlMesh {
 
 	/**
 	 * 重置并创建新的纹理id. After calling
-	 * this method you most likely want to set bitmap too as it's lost. This
-	 * method should be called only once e.g GL context is re-created as this
-	 * method does not release previous texture id, only makes sure new one is
-	 * requested on next render.
+	 * this method you most likely want to set bitmap too as it's lost.
+	 * 一旦GL context被重新创建了，这个方法就应该被调用一次。 这个方法不会释放上一章纹理的id，它
+	 * 只能确保下一次渲染时会请求新的纹理id
 	 */
 	public void resetTextures() {
 		mTextureIds = null;

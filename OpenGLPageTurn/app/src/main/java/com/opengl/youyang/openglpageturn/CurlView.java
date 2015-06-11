@@ -390,7 +390,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 	 */
 	private void setCurlPos(PointF curlPos, PointF curlDir, double radius) {
 
-		// First reposition curl so that page doesn't 'rip off' from book.
+		// First 复位 curl so that page doesn't 'rip off' from book.
 		if (mCurlState == CURL_RIGHT
 				|| (mCurlState == CURL_LEFT && mViewMode == SHOW_ONE_PAGE)) {
 			RectF pageRect = mRenderer.getPageRect(CurlRenderer.PAGE_RIGHT);
