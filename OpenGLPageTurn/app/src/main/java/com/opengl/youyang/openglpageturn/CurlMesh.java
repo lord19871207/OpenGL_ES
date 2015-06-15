@@ -26,7 +26,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 /**
- * 仿真翻页
+ * 仿真翻页 三角形网格
  */
 public class CurlMesh {
 
@@ -197,10 +197,8 @@ public class CurlMesh {
 		// 偶们没必要担心在 0和1位置的顶点所确定的那条直线
 		// 但是由于精度的问题，很有可能在3位置的顶点不是在0顶点 的对面
 		// 所以我们需要计算 0 点到 2和3点 的距离。然后根据需要 变更 line的顺序。
-		// 顶点所组成的线段 被按照x轴的顺序给出。Also vertices/lines are given in an order first one has x -coordinate
-		// at least the latter one. This property is used in getIntersections to
-		// see if there is an intersection.
-		int lines[][] = { { 0, 1 }, { 0, 2 }, { 1, 3 }, { 2, 3 } };
+		// 顶点所组成的线段 被按照x轴的顺序给出。
+		int lines[][] = { { 0, 1 }, { 0, 2 }, { 1, 3 }, { 2, 3 } };//相邻顶点之间的连线
 		{
 			// TODO: There really has to be more 'easier' way of doing this -
 			// not including extensive use of sqrt.
